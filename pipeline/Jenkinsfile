@@ -1,0 +1,97 @@
+pipeline {
+    agent any
+
+    environment {
+        DB_PASSWORD='mysql'
+        DB_NAME='testdatabase'
+        DB_USER='mysql'
+        DB_PORT='3307'
+
+        SPRING_PROFILE='dev'
+    }
+
+    stages {
+
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    env.TAG_NAME = sh(script: "./gradlew -q printVersion", returnStdout: true).trim()
+                    env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
+                }
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh './gradlew dependencies'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './gradlew build'
+                sh 'docker-compose down -v'
+            }
+        }
+
+        stage('Create Production Commit') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: 'GITHUB_TOKEN')]) {
+                    sh """
+                        git config --global user.email "jenkins@jenkins.com"
+                        git config --global user.name "jenkins"
+                        git fetch origin
+                        git checkout -b production || git checkout production
+                        git reset --hard origin/main
+
+                        #// git add .
+                        #// # Check if there are any changes before committing
+                        #// git diff --exit-code || git commit -m "${env.TAG_NAME}"
+                        git push -f https://${GITHUB_TOKEN}@github.com/rdoneux/mslf.git production
+                    """
+                }
+            }
+        }
+
+        stage('Package') {
+            when {
+                branch 'production'
+            }
+            steps {
+                sh './gradlew bootJar'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            when {
+                branch 'production'
+            }
+            steps {
+                archiveArtifacts artifacts: "build/libs/*.jar", fingerprint: true
+            }
+        }
+
+        stage('Create Github Release') {
+            when {
+                branch 'production'
+            }
+            steps {
+                script {
+                    createGitHubRelease(
+                        repository: 'rdoneux/mslf',
+                        credentialId: 'GITHUB_ACCESS_TOKEN',
+                        tag: "${env.TAG_NAME}",
+                        commitish: "production",
+                        name: "Release ${env.TAG_NAME}",
+                    )
+                }
+            }
+        }
+
+    }
+
+}
