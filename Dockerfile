@@ -13,7 +13,7 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 # Copy the JAR file dynamically (using a wildcard to select the JAR in the build/libs folder)
-COPY --from=build /app/build/libs/*.jar /app/app.jar
+COPY --from=build /app/build/libs/*-SNAPSHOT.jar /app/app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

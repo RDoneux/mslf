@@ -1,7 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://${DB_USER}:${DB_PASSWORD}@autorack.proxy.rlwy.net:37365/${DB_NAME}
-    driver-class-name: com.mysql.cj.jdbc.Driver # Ensure this is correctly specified
-server:
-  address: 0.0.0.0
-  port: 8080
+    url: jdbc:mysql://${DB_USER}:${DB_PASSWORD}@mysql.railway.internal:3306/${DB_NAME}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
