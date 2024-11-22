@@ -27,20 +27,30 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-	// implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jdbc'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
 
-
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'org.flywaydb:flyway-core'
+	compileOnly 'org.flywaydb:flyway-mysql'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task printVersion {
+	doLast {
+		println project.version
+	}
 }

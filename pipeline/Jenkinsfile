@@ -1,0 +1,94 @@
+pipeline {
+    agent any
+
+    environment {
+        DB_PASSWORD='mysql'
+        DB_NAME='testdatabase'
+        DB_USER='mysql'
+        DB_PORT='3307'
+
+        SPRING_PROFILE='dev'
+
+        RAILWAY_TOKEN = credentials("MSLF_RAILWAY_TOKEN")
+    }
+
+    stages {
+
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    env.TAG_NAME = sh(script: "./gradlew -q printVersion", returnStdout: true).trim()
+                    env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
+                }
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh './gradlew dependencies'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './gradlew build'
+                sh 'docker-compose down -v'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    // Install Railway CLI
+                    sh 'npm i @railway/cli'
+                    // Add node_modules/.bin to PATH
+                    env.PATH = "${env.WORKSPACE}/node_modules/.bin:${env.PATH}"
+
+                    sh '''
+                        railway up --detach
+                    '''
+                }
+            }
+        }
+
+        stage('Package') {
+            when {
+                branch 'production'
+            }
+            steps {
+                sh './gradlew bootJar'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            when {
+                branch 'production'
+            }
+            steps {
+                archiveArtifacts artifacts: "build/libs/*.jar", fingerprint: true
+            }
+        }
+
+        stage('Create Github Release') {
+            when {
+                branch 'production'
+            }
+            steps {
+                script {
+                    createGitHubRelease(
+                        repository: 'rdoneux/mslf',
+                        credentialId: 'GITHUB_ACCESS_TOKEN',
+                        tag: "${env.TAG_NAME}",
+                        commitish: "production",
+                        name: "Release ${env.TAG_NAME}",
+                    )
+                }
+            }
+        }
+
+    }
+}
