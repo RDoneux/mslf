@@ -1,0 +1,19 @@
+version: '3.9' # Specify the version of Docker Compose
+
+services:
+  mslfDatabase:
+    image: mysql:latest
+    container_name: mslf-database
+    restart: always
+    ports:
+      - "${DB_PORT}:3306" # Map MySQL default port
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist MySQL data
+
+volumes:
+  mysql_data: # Declare a named volume for MySQL

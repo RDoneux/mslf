@@ -1,0 +1,8 @@
+spring:
+    application:
+        name: mslf
+    profiles:
+        active: dev
+server:
+    address: 0.0.0.0
+    port: 8080
