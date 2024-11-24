@@ -16,18 +16,19 @@ pipeline {
 
         stage('Build') {
             steps {
-                checksPublish name: 'Build', summary: 'Building the project', status: 'IN_PROGRESS'
+                githubNotify context: 'Build', description: 'Build started', status: 'PENDING'
+                // checksPublish name: 'Build', summary: 'Building the project', status: 'IN_PROGRESS'
                 sh './gradlew build'
-                checksPublish name: 'Build', summary: 'Project built successfully', status: 'IN_PROGRESS'
+                // checksPublish name: 'Build', summary: 'Project built successfully', status: 'IN_PROGRESS'
             }
         }
 
         stage('Test') {
             steps {
-                checksPublish name: 'Test', summary: 'Running tests', status: 'IN_PROGRESS'
+                // checksPublish name: 'Test', summary: 'Running tests', status: 'IN_PROGRESS'
                 echo 'Running unit tests...'
                 sh './gradlew test'
-                checksPublish name: 'Test', summary: 'Tests completed successfully', status: 'IN_PROGRESS'
+                // checksPublish name: 'Test', summary: 'Tests completed successfully', status: 'IN_PROGRESS'
             }
         }
 
