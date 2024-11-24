@@ -47,12 +47,12 @@ pipeline {
 
     }
 
-    post {
-        success {
-            checksPublish name: 'Build', summary: 'Build completed successfully', status: 'COMPLETED', conclusion: 'SUCCESS'        
-        }
-        failure {
-            checksPublish name: 'Pipeline', summary: 'Pipeline failed', status: 'COMPLETED', conclusion: 'FAILURE'        
-        }
-    }
+    // post {
+    //     success {
+    //         checksPublish name: 'Build', summary: 'Build completed successfully', status: 'COMPLETED', conclusion: 'SUCCESS'        
+    //     }
+    //     failure {
+    //         checksPublish name: 'Pipeline', summary: 'Pipeline failed', status: 'COMPLETED', conclusion: 'FAILURE'        
+    //     }
+    // }
 }
