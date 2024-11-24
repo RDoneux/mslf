@@ -1,4 +1,0 @@
-CREATE TABLE poems (
-    id VARCHAR(255) PRIMARY KEY,
-    title VARCHAR(255) NOT NULL
-);
