@@ -34,15 +34,16 @@ pipeline {
                 sh './gradlew bootJar'
             }
         }
-        
-        stage('Archive Artifacts') {
-            steps {
-                echo 'Archiving the built artifact'
-                artifacts: 'build/libs/*jar', fingerprint: true
-            }
-        }
+
+        // stage('Archive Artifacts') {
+        //     steps {
+        //         echo 'Archiving the built artifact'
+        //         archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+        //     }
+        // }
 
     }
+
     post {
         success {
             githubNotify context: 'Build', description: 'Build succeeded.', status: 'SUCCESS'
