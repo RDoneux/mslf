@@ -16,15 +16,18 @@ pipeline {
 
         stage('Build') {
             steps {
-                githubNotify context: 'Build', description: 'Building...', status: 'PENDING'
+                githubChecksPublish name: 'Build', summary: 'Building the project', status: 'IN_PROGRESS'
                 sh './gradlew build'
+                githubChecksPublish name: 'Build', summary: 'Project built successfully', status: 'IN_PROGRESS'
             }
         }
 
         stage('Test') {
             steps {
+                githubChecksPublish name: 'Test', summary: 'Running tests', status: 'IN_PROGRESS'
                 echo 'Running unit tests...'
                 sh './gradlew test'
+                githubChecksPublish name: 'Test', summary: 'Tests completed successfully', status: 'IN_PROGRESS'
             }
         }
 
@@ -46,10 +49,10 @@ pipeline {
 
     post {
         success {
-            githubNotify context: 'Build', description: 'Build succeeded.', status: 'SUCCESS'
+            githubChecksPublish name: 'Build', summary: 'Build completed successfully', status: 'COMPLETED', conclusion: 'SUCCESS'        
         }
         failure {
-            githubNotify context: 'Build', description: 'Build failed.', status: 'FAILURE'
+            githubChecksPublish name: 'Pipeline', summary: 'Pipeline failed', status: 'COMPLETED', conclusion: 'FAILURE'        
         }
     }
 }
