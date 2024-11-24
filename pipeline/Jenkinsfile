@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_TOKEN = credentials('GITHUB-ACCESS-TOKEN')
+    }
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies...'
+                sh './gradlew dependencies'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                githubNotify context: 'Build', description: 'Building...', status: 'PENDING'
+                sh './gradlew build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running unit tests...'
+                sh './gradlew test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Packaging the application...'
+                sh './gradlew bootJar'
+            }
+        }
+        
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archiving the built artifact'
+                artifacts: 'build/libs/*jar', fingerprint: true
+            }
+        }
+
+    }
+    post {
+        success {
+            githubNotify context: 'Build', description: 'Build succeeded.', status: 'SUCCESS'
+        }
+        failure {
+            githubNotify context: 'Build', description: 'Build failed.', status: 'FAILURE'
+        }
+    }
+}
