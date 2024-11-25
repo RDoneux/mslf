@@ -46,7 +46,7 @@ pipeline {
 
                 withCredentials([string(credentialsId: 'SUDO', variable: 'SUDO_PASSWORD')]) {
                     sh '''
-                        npx @railway/cli link --service mslf
+                        npx @railway/cli link --service mslf --environment production --project MSLF
                         npx @railway/cli up --detach
                     '''
                 }
