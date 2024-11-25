@@ -43,14 +43,14 @@ pipeline {
             }
             steps {
                 script{
-                    def railwayProjectId = "mslf"
+                    def railwayProjectId = "4c6d2f80-abc5-4df1-a1d2-9fffca61342c"
                     def railwayBuildUrl = "https://api.railway.app/v1/projects/${railwayProjectId}/deployments"
 
                     sh """
                         curl -X POST ${railwayBuildUrl} \
                             -H "Authorization: Bearer ${RAILWAY_API_TOKEN}" \
                             -H "Content-Type: application/json" \
-                            -d '{"data": {"branch": "main"}}'  // You can customize the branch or parameters here
+                            -d '{"data": {"branch": "main"}}'
                     """
                 }
                 // withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: 'GITHUB_TOKEN')]) {
