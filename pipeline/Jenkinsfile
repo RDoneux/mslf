@@ -14,28 +14,28 @@ pipeline {
 
     stages {
 
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    env.TAG_NAME = sh(script: "./gradlew -q printVersion", returnStdout: true).trim()
-                    env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
-                }
-                sh 'docker-compose up -d'
-            }
-        }
+        // stage('Prepare Environment') {
+        //     steps {
+        //         script {
+        //             env.TAG_NAME = sh(script: "./gradlew -q printVersion", returnStdout: true).trim()
+        //             env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
+        //         }
+        //         sh 'docker-compose up -d'
+        //     }
+        // }
 
-        stage('Install Dependencies') {
-            steps {
-                sh './gradlew dependencies'
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh './gradlew dependencies'
+        //     }
+        // }
 
-        stage('Build') {
-            steps {
-                sh './gradlew build'
-                sh 'docker-compose down -v'
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         sh './gradlew build'
+        //         sh 'docker-compose down -v'
+        //     }
+        // }
 
         stage('Create Production Commit') {
             when {
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script{
                     def railwayProjectId = "mslf"
-                    def railwayBuildUrl = "https://api.railway.app/v1/projects${railwayProjectId}/deployments"
+                    def railwayBuildUrl = "https://api.railway.app/v1/projects/${railwayProjectId}/deployments"
 
                     sh """
                         curl -X POST ${railwayBuildUrl} \
