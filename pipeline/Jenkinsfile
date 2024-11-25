@@ -10,6 +10,7 @@ pipeline {
         SPRING_PROFILE='dev'
 
         RAILWAY_API_TOKEN = credentials("RAILWAY_API_TOKEN")
+        SUDO_PASSWORD = credentials('SUDO') // Reference the credential ID
     }
 
     stages {
@@ -43,9 +44,9 @@ pipeline {
             }
             steps {
 
-                sh 'sudo npm i -g @railway/cli'
+                sh 'echo $SUDO_PASSWORD | sudo -S npm i -g @railway/cli'
                 // sh 'railway login --browserless'
-                sh 'sudo railway up --detach'
+                sh 'railway up --detach'
                 // script{
                 //     def railwayProjectId = "4c6d2f80-abc5-4df1-a1d2-9fffca61342c"
                 //     def railwayBuildUrl = "https://api.railway.app/v1/projects/${railwayProjectId}/deployments"
