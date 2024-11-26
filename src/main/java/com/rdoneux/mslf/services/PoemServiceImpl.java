@@ -54,8 +54,19 @@ public class PoemServiceImpl implements PoemService {
     public PoemDTO createPoem(PoemDTO poemDTO) {
         Poem poem = poemMapper.toPoem(poemDTO);
         Poem savedPoem = poemRepository.save(poem);
-        System.out.println("saved poem id" + savedPoem.getId());
         return poemMapper.toDTO(savedPoem);
+    }
+
+    @Override
+    public PoemDTO updatePoem(String id, PoemDTO poemDTO) {
+        Poem poemToSave = poemMapper.toPoem(poemDTO.toBuilder().id(id).build());
+        Poem savedPoem = poemRepository.save(poemToSave);
+        return poemMapper.toDTO(savedPoem);
+    }
+
+    @Override
+    public void deletePoem(String id) {
+        poemRepository.deleteById(id);
     }
 
 }
