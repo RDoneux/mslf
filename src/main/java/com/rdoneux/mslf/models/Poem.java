@@ -5,6 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import java.sql.Timestamp;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +31,19 @@ public class Poem {
 
     @Column(name = "title")
     private String title;
+
+    @Column(name = "content")
+    private String content;
+
+    @Column(name = "author")
+    private String author;
+
+    @CreationTimestamp
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
 }
