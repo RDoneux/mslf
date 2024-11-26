@@ -40,8 +40,10 @@ pipeline {
 
         stage('Package') {
             when {
-                branch 'main'
-                branch 'production'
+                anyOf {
+                    branch 'main'
+                    branch 'production'
+                }
             }
             steps {
                 sh './gradlew bootJar'
@@ -50,30 +52,32 @@ pipeline {
 
         stage('Archive Artifacts') {
             when {
-                branch 'main'
-                branch 'production'
+                anyOf {
+                    branch 'main'
+                    branch 'production'
+                }
             }
             steps {
                 archiveArtifacts artifacts: "build/libs/*.jar", fingerprint: true
             }
         }
 
-        // stage('Create Github Release') {
-        //     when {
-        //         branch 'production'
-        //     }
-        //     steps {
-        //         script {
-        //             createGitHubRelease(
-        //                 repository: 'rdoneux/mslf',
-        //                 credentialId: 'GITHUB_ACCESS_TOKEN',
-        //                 tag: "${env.TAG_NAME}",
-        //                 commitish: "production",
-        //                 name: "Release ${env.TAG_NAME}",
-        //             )
-        //         }
-        //     }
-        // }
+        stage('Create Github Release') {
+            when {
+                branch 'production'
+            }
+            steps {
+                script {
+                    createGitHubRelease(
+                        repository: 'rdoneux/mslf',
+                        credentialId: 'GITHUB_ACCESS_TOKEN',
+                        tag: "${env.TAG_NAME}",
+                        commitish: "production",
+                        name: "Release ${env.TAG_NAME}",
+                    )
+                }
+            }
+        }
 
         stage('Publish to Docker Hub') {
             when {
