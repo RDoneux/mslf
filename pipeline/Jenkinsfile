@@ -107,8 +107,7 @@ pipeline {
                     sh 'npm i @railway/cli'
                     // Add node_modules/.bin to PATH
                     env.PATH = "${env.WORKSPACE}/node_modules/.bin:${env.PATH}"
-
-                    sh 'railway up --detach'
+                    sh 'railway up --detach --service mslf'
                 }
             }
         }
