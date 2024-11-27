@@ -26,7 +26,7 @@ public class PoemControllerAdvice {
                         PoemEntityNotFoundException notFoundException) {
                 var errors = List.of(new NotFoundError(notFoundException.getMessage()));
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(new PoemExceptionResponse<NotFoundError>("Poem not found", errors));
+                                .body(new PoemExceptionResponse<NotFoundError>("Poem Not Found", errors));
         }
 
         @ExceptionHandler({ MissingServletRequestParameterException.class })
@@ -55,16 +55,5 @@ public class PoemControllerAdvice {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(new PoemExceptionResponse<ValidationError>("Request Missing Body", errors));
         }
-
-        // @ExceptionHandler({ HttpMessageNotReadableException.class })
-        // public ResponseEntity<PoemExceptionResponse<ValidationError>>
-        // handlePoemValidationException(
-        // PoemControllerValidationException validationException) {
-        // var errors = List.of(new ValidationError(validationException.getField(),
-        // validationException.getMessage()));
-        // return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        // .body(new PoemExceptionResponse<ValidationError>("Poem validation failed",
-        // errors));
-        // }
 
 }

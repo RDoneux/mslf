@@ -14,6 +14,8 @@ import com.rdoneux.mslf.models.PoemDTO;
 import com.rdoneux.mslf.services.PoemService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,9 +31,11 @@ public class PoemController {
         this.poemService = poemService;
     }
 
-    @GetMapping()
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<PoemDTO> getAllPoems(@RequestParam Integer page, @RequestParam Integer size) {
+    public Page<PoemDTO> getAllPoems(
+            @RequestParam @NotNull @Min(0) Integer page,
+            @RequestParam @NotNull @Min(1) Integer size) {
         return poemService.findAll(page, size);
     }
 
@@ -41,7 +45,7 @@ public class PoemController {
         return poemService.findById(id);
     }
 
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PoemDTO createPoem(@RequestBody @Valid PoemDTO poemDTO) {
         return poemService.createPoem(poemDTO);
