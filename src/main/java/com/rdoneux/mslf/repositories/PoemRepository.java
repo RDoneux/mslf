@@ -4,5 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.rdoneux.mslf.models.Poem;
 
-public interface PoemRepository extends JpaRepository<Poem, String> {
-}
+public interface PoemRepository extends JpaRepository<Poem, String> {}

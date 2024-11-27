@@ -7,8 +7,6 @@ pipeline {
         DB_USER='mysql'
         DB_PORT='3307'
 
-        SPRING_PROFILE='dev'
-
         RAILWAY_TOKEN = credentials("MSLF_RAILWAY_TOKEN")
         DOCKER_IMAGE = 'rdoneux/mslf'
     }
@@ -22,6 +20,13 @@ pipeline {
                     env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
                 }
                 sh 'docker-compose up -d'
+                retry(10){
+                    sh '''
+                        echo "Waiting for MySQL to be ready..."
+                        docker-compose exec -T mslfDatabase bash -c "until mysqladmin ping -h localhost --silent; do echo waiting for mysql; sleep 10; done;"
+                    '''
+                }
+                echo "MySQL is up and ready."
             }
         }
 
@@ -33,7 +38,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew build'
+                sh './gradlew flywayMigrate'
+                sh './gradlew clean test'
                 sh 'docker-compose down -v'
             }
         }
