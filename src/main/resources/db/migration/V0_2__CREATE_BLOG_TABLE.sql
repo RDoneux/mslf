@@ -1,4 +1,4 @@
-CREATE TABLE blog (
+CREATE TABLE blogs (
     id VARCHAR(36) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT,

@@ -12,48 +12,49 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.rdoneux.mslf.controllers.BlogController;
 import com.rdoneux.mslf.controllers.PoemController;
-import com.rdoneux.mslf.controllers.exceptions.PoemEntityNotFoundException;
-import com.rdoneux.mslf.controllers.exceptions.PoemExceptionResponse;
+import com.rdoneux.mslf.controllers.exceptions.EntityNotFoundException;
+import com.rdoneux.mslf.controllers.exceptions.ControllerExceptionResponse;
 import com.rdoneux.mslf.util.NotFoundError;
 import com.rdoneux.mslf.util.ValidationError;
 
-@ControllerAdvice(assignableTypes = PoemController.class)
-public class PoemControllerAdvice {
+@ControllerAdvice(assignableTypes = { PoemController.class, BlogController.class })
+public class CustomControllerAdvice {
 
-        @ExceptionHandler({ PoemEntityNotFoundException.class })
-        public ResponseEntity<PoemExceptionResponse<NotFoundError>> handlePoemNotFoundException(
-                        PoemEntityNotFoundException notFoundException) {
+        @ExceptionHandler({ EntityNotFoundException.class })
+        public ResponseEntity<ControllerExceptionResponse<NotFoundError>> handlePoemNotFoundException(
+                        EntityNotFoundException notFoundException) {
                 var errors = List.of(new NotFoundError(notFoundException.getMessage()));
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(new PoemExceptionResponse<NotFoundError>("Poem Not Found", errors));
+                                .body(new ControllerExceptionResponse<NotFoundError>("Entity Not Found", errors));
         }
 
         @ExceptionHandler({ MissingServletRequestParameterException.class })
-        public ResponseEntity<PoemExceptionResponse<ValidationError>> handleMissingRequestParamaters(
+        public ResponseEntity<ControllerExceptionResponse<ValidationError>> handleMissingRequestParamaters(
                         MissingServletRequestParameterException missingParamsException) {
                 var errors = List.of(new ValidationError("Bad Request", missingParamsException.getMessage()));
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new PoemExceptionResponse<>("Missing Paramaters", errors));
+                                .body(new ControllerExceptionResponse<>("Missing Paramaters", errors));
         }
 
         @ExceptionHandler({ MethodArgumentNotValidException.class })
-        public ResponseEntity<PoemExceptionResponse<String>> handleMalformedPoemBody(
+        public ResponseEntity<ControllerExceptionResponse<String>> handleMalformedPoemBody(
                         MethodArgumentNotValidException malformedBodyException) {
                 List<String> errors = malformedBodyException.getFieldErrors().stream()
                                 .map((FieldError fieldError) -> fieldError.getField() + " "
                                                 + fieldError.getDefaultMessage())
                                 .collect(Collectors.toList());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new PoemExceptionResponse<String>("Poem Missing Fields", errors));
+                                .body(new ControllerExceptionResponse<String>("Entity Missing Fields", errors));
         }
 
         @ExceptionHandler({ HttpMessageNotReadableException.class })
-        public ResponseEntity<PoemExceptionResponse<ValidationError>> handleNoBody(
+        public ResponseEntity<ControllerExceptionResponse<ValidationError>> handleNoBody(
                         HttpMessageNotReadableException noBodyException) {
                 var errors = List.of(new ValidationError("Bad Request", noBodyException.getMessage()));
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(new PoemExceptionResponse<ValidationError>("Request Missing Body", errors));
+                                .body(new ControllerExceptionResponse<ValidationError>("Request Missing Body", errors));
         }
 
 }
