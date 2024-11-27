@@ -20,6 +20,7 @@ pipeline {
                     env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
                 }
                 sh 'docker-compose up -d'
+                sh './gradlew flywayMigrate'
             }
         }
 
@@ -31,7 +32,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew clean test --no-deamon'
+                sh './gradlew clean test'
                 sh 'docker-compose down -v'
             }
         }

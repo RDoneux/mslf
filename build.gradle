@@ -2,10 +2,23 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.6'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.flywaydb.flyway' version '6.5.4'
 }
 
 group = 'com.rdoneux'
 version = '0.0.1-SNAPSHOT'
+
+// LOAD .ENV PROPERTIES
+def envFile = file('.env')
+def props = new Properties()
+if(envFile.exists()) {
+	envFile.withInputStream{
+		props.load(it)
+	}
+} else {
+	println ".env file not found, defaulting to system variables"
+}
+// **********************
 
 java {
 	toolchain {
@@ -33,7 +46,6 @@ dependencies {
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '9.1.0'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.1'
 
-
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'org.flywaydb:flyway-core'
 	compileOnly 'org.flywaydb:flyway-mysql'
@@ -49,6 +61,16 @@ dependencies {
 	
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+flyway {
+    url = "jdbc:mysql://localhost:${System.getenv('DB_PORT') ?: props['DB_PORT']}/${System.getenv('DB_NAME') ?: props['DB_NAME']}"
+    user = System.getenv('DB_USER') ?: props['DB_USER']
+    password = System.getenv('DB_PASSWORD') ?: props['DB_PASSWORD']
+    locations = ['classpath:db/migration']
+}
+
+// // we need to build classes before we can migrate
+// flywayMigrate.dependsOn classes
 
 tasks.named('test') {
 	useJUnitPlatform()
