@@ -20,10 +20,13 @@ pipeline {
                     env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
                 }
                 sh 'docker-compose up -d'
-                sh '''
-                    echo "Waiting for MySQL to be ready..."
-                    docker-compose exec -T db bash -c "until mysqladmin ping -h localhost --silent; do echo waiting for mysql; sleep 2; done;"
-                '''
+                retry(10){
+                    sh '''
+                        echo "Waiting for MySQL to be ready..."
+                        docker-compose exec -T mslfDatabase bash -c "until mysqladmin ping -h localhost --silent; do echo waiting for mysql; sleep 2; done;"
+                    '''
+                }
+                echo "MySQL is up and ready."
             }
         }
 
