@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.rdoneux.mslf.controllers.exceptions.PoemEntityNotFoundException;
+import com.rdoneux.mslf.controllers.exceptions.EntityNotFoundException;
 import com.rdoneux.mslf.models.Poem;
 import com.rdoneux.mslf.models.PoemDTO;
 import com.rdoneux.mslf.repositories.PoemRepository;
@@ -44,7 +44,7 @@ public class PoemServiceImpl implements PoemService {
         Optional<Poem> maybePoem = poemRepository.findById(id);
 
         if (maybePoem.isEmpty()) {
-            throw new PoemEntityNotFoundException("Poem with id '" + id + "' not found");
+            throw new EntityNotFoundException("Poem with id '" + id + "' not found");
         }
 
         return poemMapper.toDTO(maybePoem.get());

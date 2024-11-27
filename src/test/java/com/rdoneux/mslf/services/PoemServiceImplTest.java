@@ -22,7 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.rdoneux.mslf.controllers.exceptions.PoemEntityNotFoundException;
+import com.rdoneux.mslf.controllers.exceptions.EntityNotFoundException;
 import com.rdoneux.mslf.models.Poem;
 import com.rdoneux.mslf.models.PoemDTO;
 import com.rdoneux.mslf.repositories.PoemRepository;
@@ -131,7 +131,7 @@ public class PoemServiceImplTest {
 
         when(poemRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(PoemEntityNotFoundException.class, () -> poemService.findById(id));
+        assertThrows(EntityNotFoundException.class, () -> poemService.findById(id));
 
         verify(poemRepository, times(1)).findById(id);
         verify(poemMapper, times(0)).toDTO(mockPoem);

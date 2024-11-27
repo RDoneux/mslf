@@ -1,5 +1,5 @@
-CREATE TABLE blog (
-    id VARCHAR(36) PRIMARY KEY,
+CREATE TABLE blogs (
+    id VARCHAR(36) PRIMARY KEY NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT,
     author VARCHAR(255) NOT NULL,
