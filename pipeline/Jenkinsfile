@@ -23,7 +23,7 @@ pipeline {
                 retry(10){
                     sh '''
                         echo "Waiting for MySQL to be ready..."
-                        docker-compose exec -T mslfDatabase bash -c "until mysqladmin ping -h localhost --silent; do echo waiting for mysql; sleep 2; done;"
+                        docker-compose exec -T mslfDatabase bash -c "until mysqladmin ping -h localhost --silent; do echo waiting for mysql; sleep 10; done;"
                     '''
                 }
                 echo "MySQL is up and ready."
