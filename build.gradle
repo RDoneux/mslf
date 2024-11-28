@@ -67,6 +67,10 @@ flyway {
     user = System.getenv('DB_USER') ?: props['DB_USER']
     password = System.getenv('DB_PASSWORD') ?: props['DB_PASSWORD']
     locations = ['classpath:db/migration']
+
+	println "jdbc:mysql://localhost:${System.getenv('DB_PORT') ?: props['DB_PORT']}/${System.getenv('DB_NAME') ?: props['DB_NAME']}"
+	println System.getenv('DB_USER') ?: props['DB_USER']
+	println System.getenv('DB_PASSWORD') ?: props['DB_PASSWORD']
 }
 
 // // we need to build classes before we can migrate
