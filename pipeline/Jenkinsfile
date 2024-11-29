@@ -39,6 +39,7 @@ pipeline {
                     ./gradlew clean test
                     docker-compose down --remove-orphans
                 '''
+                junit "**/test-results/test/TEST-*.xml"
             }
         }
 
