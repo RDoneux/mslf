@@ -20,6 +20,7 @@ pipeline {
                 script {
                     env.TAG_NAME = sh(script: "./gradlew -q printVersion", returnStdout: true).trim()
                     env.TAG_NAME = "${env.TAG_NAME}.${env.BUILD_NUMBER}"
+                    echo "Tag: ${env.TAG_NAME}"
                 }
                 sh 'docker-compose up -d'
             }
@@ -31,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Build & Test') {
             steps {
                 sh '''
 

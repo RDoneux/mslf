@@ -8,18 +8,6 @@ plugins {
 group = 'com.rdoneux'
 version = '0.0.1-SNAPSHOT'
 
-// LOAD .ENV PROPERTIES
-def envFile = file('.env')
-def props = new Properties()
-if(envFile.exists()) {
-	envFile.withInputStream{
-		props.load(it)
-	}
-} else {
-	println ".env file not found, defaulting to system variables"
-}
-// **********************
-
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -59,6 +47,18 @@ dependencies {
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+// LOAD .ENV PROPERTIES
+def envFile = file('.env')
+def props = new Properties()
+if(envFile.exists()) {
+	envFile.withInputStream{
+		props.load(it)
+	}
+} else {
+	// println ".env file not found, defaulting to system variables"
+}
+// **********************
 
 flyway {
     url = "jdbc:mysql://localhost:${System.getenv('DB_PORT') ?: props['DB_PORT']}/${System.getenv('DB_NAME') ?: props['DB_NAME']}"
