@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.rdoneux.mslf.controllers.BlogController;
 import com.rdoneux.mslf.controllers.PoemController;
+import com.rdoneux.mslf.controllers.UserController;
 import com.rdoneux.mslf.controllers.exceptions.EntityNotFoundException;
 import com.rdoneux.mslf.controllers.exceptions.ControllerExceptionResponse;
 import com.rdoneux.mslf.util.NotFoundError;
 import com.rdoneux.mslf.util.ValidationError;
 
-@ControllerAdvice(assignableTypes = { PoemController.class, BlogController.class })
+@ControllerAdvice(assignableTypes = { PoemController.class, BlogController.class, UserController.class })
 public class CustomControllerAdvice {
 
         @ExceptionHandler({ EntityNotFoundException.class })
