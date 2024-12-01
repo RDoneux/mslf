@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.rdoneux'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0-SNAPSHOT'
 
 // LOAD .ENV PROPERTIES
 def envFile = file('.env')
